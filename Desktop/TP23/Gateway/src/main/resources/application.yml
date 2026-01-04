@@ -1,0 +1,33 @@
+spring:
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        service-name: SERVICE-GATEWAY
+        health-check-interval: 10s
+        health-check-critical-timeout: 30s
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: client-service
+          uri: lb://SERVICE-CLIENT
+          predicates:
+            - Path=/api/client/**
+          filters:
+            - StripPrefix=2
+  application:
+    name: SERVICE-GATEWAY
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,discovery
+
